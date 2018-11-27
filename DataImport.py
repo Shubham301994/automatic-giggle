@@ -41,7 +41,17 @@ class DataImport:
         
         self.high = web.DataReader(self.ticker,data_source='yahoo',start = self.start,end = self.end)['High']
         self.highDF = pd.DataFrame(self.high)#Create the pandas Data Frame
+        print(self.highDF.shape)
         return self.highDF
+    
+    def pull_low(self,ticker,start,end):
+        self.ticker = ticker
+        self.start = start
+        self.end = end
+        
+        self.high = web.DataReader(self.ticker,data_source='yahoo',start = self.start,end = self.end)['Low']
+        self.lowDF = pd.DataFrame(self.high)#Create the pandas Data Frame
+        return self.lowDF
     
     
     def calcs(self,fb):
@@ -71,7 +81,6 @@ if __name__=='__main__':
     dataImport.bollinger_plot(fb)
 
     high = dataImport.pull_high('aapl','1/1/1970', '31/12/2017')
-    print(high)
 
 
 
