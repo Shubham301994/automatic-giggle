@@ -30,9 +30,19 @@ class DataImport:
         self.start = start
         self.end = end
         
-        self.info = web.DataReader(self.ticker,data_source='yahoo',start = self.start,end = self.end)['Adj Close']
-        self.AdjCloseDF = pd.DataFrame(self.info)#Create the pandas Data Frame
+        self.adjClose = web.DataReader(self.ticker,data_source='yahoo',start = self.start,end = self.end)['Adj Close']
+        self.AdjCloseDF = pd.DataFrame(self.adjClose)#Create the pandas Data Frame
         return self.AdjCloseDF
+    
+    def pull_high(self,ticker,start,end):
+        self.ticker = ticker
+        self.start = start
+        self.end = end
+        
+        self.high = web.DataReader(self.ticker,data_source='yahoo',start = self.start,end = self.end)['High']
+        self.highDF = pd.DataFrame(self.high)#Create the pandas Data Frame
+        return self.highDF
+    
     
     def calcs(self,fb):
         '''
@@ -42,9 +52,7 @@ class DataImport:
         fb['30 Day STD'] = fb['Adj Close'].rolling(window=20).std()
         fb['Upper Band'] = fb['30 Day MA'] + (fb['30 Day STD'] * 2)
         fb['Lower Band'] = fb['30 Day MA'] - (fb['30 Day STD'] * 2)
-        print(fb['30 Day MA'])
     
-
     def bollinger_plot(self,fb):
         '''
             Takes the Adjusted Close Price
@@ -61,6 +69,9 @@ if __name__=='__main__':
     fb = dataImport.pull_adj_close('fb','1/1/2017', '31/12/2017')
     dataImport.calcs(fb)
     dataImport.bollinger_plot(fb)
+
+    high = dataImport.pull_high('aapl','1/1/1970', '31/12/2017')
+    print(high)
 
 
 
