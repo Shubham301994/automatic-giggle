@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 class DataImport:
 
-    def pull_adj_close(self,ticker,start,end):
+    def pull_feat(self,ticker,start,end,feat):
         '''
             Uses pandas_datareader to pull Adjusted Close price for a
             ticker, from start date, to end date. Returns a Pandas DF of
@@ -26,33 +26,14 @@ class DataImport:
             actions that occured at any time before the next day's open. Used
             for examining historical returns
         '''
+        #These should be imported from main class
         self.ticker = ticker
         self.start = start
         self.end = end
         
-        self.adjClose = web.DataReader(self.ticker,data_source='yahoo',start = self.start,end = self.end)['Adj Close']
-        self.AdjCloseDF = pd.DataFrame(self.adjClose)#Create the pandas Data Frame
-        return self.AdjCloseDF
-    
-    def pull_high(self,ticker,start,end):
-        self.ticker = ticker
-        self.start = start
-        self.end = end
-        
-        self.high = web.DataReader(self.ticker,data_source='yahoo',start = self.start,end = self.end)['High']
-        self.highDF = pd.DataFrame(self.high)#Create the pandas Data Frame
-        print(self.highDF.shape)
-        return self.highDF
-    
-    def pull_low(self,ticker,start,end):
-        self.ticker = ticker
-        self.start = start
-        self.end = end
-        
-        self.high = web.DataReader(self.ticker,data_source='yahoo',start = self.start,end = self.end)['Low']
-        self.lowDF = pd.DataFrame(self.high)#Create the pandas Data Frame
-        return self.lowDF
-    
+        self.feature = web.DataReader(self.ticker,data_source='yahoo',start = self.start,end = self.end)[feat]
+        self.featDF = pd.DataFrame(self.feature)#Create the pandas Data Frame
+        return self.featDF
     
     def calcs(self,fb):
         '''
@@ -63,24 +44,16 @@ class DataImport:
         fb['Upper Band'] = fb['30 Day MA'] + (fb['30 Day STD'] * 2)
         fb['Lower Band'] = fb['30 Day MA'] - (fb['30 Day STD'] * 2)
     
-    def bollinger_plot(self,fb):
-        '''
-            Takes the Adjusted Close Price
-        '''
-        fb[['Adj Close', '30 Day MA', 'Upper Band', 'Lower Band']].plot(figsize=(12,6))
-        plt.title('30 Day Bollinger Band for Facebook')
-        plt.ylabel('Price (USD)')
-        plt.show();
 
 if __name__=='__main__':
     '''use this in every class in order to test them separately'''
     
     dataImport = DataImport()
-    fb = dataImport.pull_adj_close('fb','1/1/2017', '31/12/2017')
-    dataImport.calcs(fb)
-    dataImport.bollinger_plot(fb)
+    fb = dataImport.pull_feat('ge','1/2/1962', '27/11/2018','High')
+    print(fb.shape)
 
-    high = dataImport.pull_high('aapl','1/1/1970', '31/12/2017')
+#dataImport.calcs(fb)
+
 
 
 
