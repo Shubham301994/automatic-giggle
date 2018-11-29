@@ -1,15 +1,13 @@
 '''===========================================================
     Imports:
-    numpy:
+    numpy: Numerical analysis of large data sets
     pandas: Matrix data processor
-    matplotlib.pyplot: Used for plotting data
     DataImport: class from DataImport file
     MinMaxScaler: transforms features by scaling to given range
     datetime: used to create arrays of dates and strip time
 ============================================================'''
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from DataImport import DataImport
 from sklearn.preprocessing import MinMaxScaler
 import datetime as dt
@@ -151,34 +149,45 @@ class LinRegLearner:
             mean = np.mean(scaledTrain[idx-windowSize:idx])
             stdAvgPredict.append(mean)
             
-            #Calculates
+            '''Calculates MSE, by taking the squared error b/w the actual value one point
+            ahead and the predicted value'''
             mseError = (stdAvgPredict[-1]-scaledTrain[idx])**2
             
             mseErrors.append(mseError)
             stdAvgX.append(date)
 
+        #Average of all errors
         meanError = np.mean(mseErrors)
         mse = 0.5*meanError
+        
+        #.5f uses 5 point precision
         print('MSE error for standard averaging: %.5f'%(mse))
 
     def exp_moving_avg(self,scaledTrain):
         '''
-            
+            Calculates an Exponential Moving Average (EAM) maintained over
+            time of historical stock data. decay decides how relevant is
+            the most current prediction towards the EMA. In our case, it will
+            be 0.5.
         '''
         windowSize = 100
         N = scaledTrain.size
-        runAvgPredict = []
-        mse_Errors = []
+        runAvgPredict = []#array of running Average Predictions
+        emaMSE = []#MSE array of EMA
         runMean = 0.0
         runAvgPredict.append(runMean)
         decay = 0.5
 
         for predict in range(1,N):
-            runMean = runMean*decay + (1.0-decay)*scaledTrain[predict-1]
+            #Calculates the running average
+            runMean = decay * runMean + (1.0-decay)*scaledTrain[predict-1]
             runAvgPredict.append(runMean)
-            mse_Errors.append((runAvgPredict[-1]-scaledTrain[predict])**2)
+            
+            #Calculates the error for the running average
+            emaError = (runAvgPredict[-1]-scaledTrain[predict])**2
+            emaMSE.append(emaError)
 
-        print('MSE error for EMA averaging: %.5f'%(0.5*np.mean(mse_Errors)))
+        print('MSE error for EMA averaging: %.5f'%(0.5*np.mean(emaMSE)))
 
 if __name__=='__main__':
     '''Used to test this class separately'''
@@ -190,6 +199,9 @@ if __name__=='__main__':
     trainSet = lrLearner.train_data(ticker,start,end)
     testSet = lrLearner.test_data(ticker,start,end)
     scaledTrainTest = lrLearner.data_scaling(trainSet,testSet)
+    
+    scaledTrain = scaledTrainTest[0]
+    scaledTest = scaledTrainTest[1]
 
     dates = lrLearner.extract_dates()
     
