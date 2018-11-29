@@ -4,8 +4,8 @@ from pandas_datareader import data as web
 class DataImport:
     '''==============================================================================
         This module is used for importing stock data using the Pandas Data Reader
-        which utilizing Yahoo Finnance database for historical stock data. Specific
-        features can be imported as well as a full set of data. 
+        which utilizing Yahoo Finance database for historical stock data. Specific
+        features can be imported as well as a full set of data.
     =============================================================================='''
     def pull_feat(self,ticker,start,end,feat):
         '''

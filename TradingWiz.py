@@ -9,7 +9,7 @@ from LinRegLearner import LinRegLearner
 ticker = 'ge'
 start = '1/1/1962'
 end = '28/11/2018'
-    
+
 lrLearner = LinRegLearner()
 trainData = lrLearner.train_data(ticker,start,end)#obtain trainData
 testData = lrLearner.test_data(ticker,start,end)#obtain testData

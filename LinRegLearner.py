@@ -100,7 +100,7 @@ class LinRegLearner:
         #Returns a tuple of scaled/smoothed trainData & scaled testData
         return trainData,testData
     
-    def concat_train_test(trainData,testData):
+    def concat_train_test(self,trainData,testData):
         '''
             Combines trainData & testData, which represents mid_price()
             after scaling and smoothing
@@ -162,6 +162,7 @@ class LinRegLearner:
         
         #.5f uses 5 point precision
         print('MSE error for standard averaging: %.5f'%(mse))
+        return stdAvgPredict
 
     def exp_moving_avg(self,scaledTrain):
         '''
